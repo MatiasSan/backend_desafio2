@@ -1,12 +1,18 @@
 import express from 'express';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
+import path from 'path';
 
-const app = express()
-const PORT = process.env.PORT || 3000
-app.use(express.json())
-app.get("/", (req, res) => {
-    res.sendFile("/desafio_2_express/index.html")
-})
+const app = express();
+const PORT = process.env.PORT || 3000;
+app.use(express.json());
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(dirname, 'index.html'));
+});
+
 app.post("/canciones", (req, res) => {
     try {
         const cancion = req.body
@@ -30,19 +36,17 @@ app.get("/canciones", (req, res) => {
     }
 });
 
+// Made Ricardo Moena
 app.put("/canciones/:id", (req, res) => {
     try {
-        const id = req.params.id; 
-        const nuevaCancion = req.body;
+        const {id} = req.params 
+        const cancion = req.body;
         const canciones = JSON.parse(fs.readFileSync("repertorio.json"));
-        const cancionIndex = canciones.findIndex(c => c.id === id);
-        if (cancionIndex !== -1) {
-            canciones[cancionIndex] = nuevaCancion;
-            fs.writeFileSync("repertorio.json", JSON.stringify(canciones));
-            res.send("Canción actualizada exitosamente!");
-        } else {
-            res.status(404).send("Canción no encontrada");
-        }
+        const index = canciones.findIndex(c => c.id == id);
+        canciones[index]= cancion
+        fs.writeFileSync("repertorio.json", JSON.stringify(canciones))
+        res.send("cancion modificada con éxito")
+
     } catch (error) {
         console.error("Error al actualizar la canción:", error);
         res.status(500).send("Error al actualizar la canción");
@@ -62,4 +66,4 @@ app.delete("/canciones/:id", (req, res) => {
     }
 });
 
-app.listen(PORT, console.log('!Servidor encendido!'))
+app.listen(PORT, console.log('¡Servidor encendido!'));
