@@ -35,19 +35,18 @@ app.get("/canciones", (req, res) => {
         res.status(500).send("Error al obtener las canciones");
     }
 });
+
+// Made Ricardo Moena
 app.put("/canciones/:id", (req, res) => {
     try {
-        const id = req.params.id; 
-        const nuevaCancion = req.body;
+        const {id} = req.params 
+        const cancion = req.body;
         const canciones = JSON.parse(fs.readFileSync("repertorio.json"));
-        const cancionIndex = canciones.findIndex(c => c.id === id);
-        if (cancionIndex !== -1) {
-            canciones[cancionIndex] = nuevaCancion;
-            fs.writeFileSync("repertorio.json", JSON.stringify(canciones));
-            res.send("Canción actualizada exitosamente!");
-        } else {
-            res.status(404).send("Canción no encontrada");
-        }
+        const index = canciones.findIndex(c => c.id == id);
+        canciones[index]= cancion
+        fs.writeFileSync("repertorio.json", JSON.stringify(canciones))
+        res.send("cancion modificada con éxito")
+
     } catch (error) {
         console.error("Error al actualizar la canción:", error);
         res.status(500).send("Error al actualizar la canción");
