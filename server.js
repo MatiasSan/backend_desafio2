@@ -3,20 +3,20 @@ import fs from 'fs';
 
 const app = express()
 const PORT = process.env.PORT || 3000
-
+app.use(express.json())
 app.get("/", (req, res) => {
     res.sendFile("/desafio_2_express/index.html")
 })
 app.post("/canciones", (req, res) => {
     try {
-        const cancion = req.body;
-        const canciones = JSON.parse(fs.readFileSync("repertorio.json"));
-        canciones.push(cancion);
-        fs.writeFileSync("repertorio.json", JSON.stringify(cancion));
-        res.send("Canción agregada exitosamente!");
+        const cancion = req.body
+        const canciones = JSON.parse(fs.readFileSync("repertorio.json"))
+        canciones.push(cancion)
+        fs.writeFileSync("repertorio.json", JSON.stringify(canciones))
+        res.send("Canción agregada exitosamente!")
     } catch (error) {
-        console.error("Error al agregar la canción:", error);
-        res.status(500).send("Error al agregar la canción");
+        console.error("Error al agregar la canción:", error)
+        res.status(500).send("Error al agregar la canción")
     }
 });
 
