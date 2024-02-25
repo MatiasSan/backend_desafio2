@@ -1,12 +1,18 @@
 import express from 'express';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
+import path from 'path';
 
-const app = express()
-const PORT = process.env.PORT || 3000
-app.use(express.json())
-app.get("/", (req, res) => {
-    res.sendFile("/desafio_2_express/index.html")
-})
+const app = express();
+const PORT = process.env.PORT || 3000;
+app.use(express.json());
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(dirname, 'index.html'));
+});
+
 app.post("/canciones", (req, res) => {
     try {
         const cancion = req.body
@@ -29,7 +35,6 @@ app.get("/canciones", (req, res) => {
         res.status(500).send("Error al obtener las canciones");
     }
 });
-
 app.put("/canciones/:id", (req, res) => {
     try {
         const id = req.params.id; 
@@ -62,4 +67,4 @@ app.delete("/canciones/:id", (req, res) => {
     }
 });
 
-app.listen(PORT, console.log('!Servidor encendido!'))
+app.listen(PORT, console.log('¡Servidor encendido!'));
